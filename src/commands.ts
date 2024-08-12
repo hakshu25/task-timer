@@ -1,5 +1,5 @@
 import { getTaskDuration } from "./domains/task.ts";
-import { endTaskUsecase, listTasksUsecase, startTaskUsecase } from "./usecases/task_usecase.ts";
+import { endTaskUsecase, listTasksUsecase, pauseTaskUsecase, startTaskUsecase } from "./usecases/task_usecase.ts";
 import { formatDuration } from "./utils/date.ts";
 
 interface Task {
@@ -68,15 +68,12 @@ export async function endTask(name: string, filePath: string) {
 }
 
 export async function pauseTask(name: string, filePath: string) {
-  const tasks = await loadTasks(filePath);
-  const task = tasks.find((t) => t.name === name && !t.endTime && !t.pauseTime);
-  if (!task) {
-    console.log(`Task '${name}' not found or already paused.`);
-    return;
+  try {
+    await pauseTaskUsecase(name, filePath);
+    console.log(`Task '${name}' paused`);
+  } catch (error) {
+    console.log(error.message);
   }
-  task.pauseTime = new Date();
-  await saveTasks(tasks, filePath);
-  console.log(`Task '${name}' paused at ${task.pauseTime.toLocaleString()}`);
 }
 
 export async function resumeTask(name: string, filePath: string) {

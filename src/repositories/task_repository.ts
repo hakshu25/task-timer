@@ -89,3 +89,10 @@ export async function updateTaskEndTime(task: DoneTask, filePath: string) {
   tasks[taskIndex].endTime = task.endTime!.toISOString();
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
 }
+
+export async function updateTaskPauseTime(task: PausedTask, filePath: string) {
+  const tasks = await loadTasks(filePath);
+  const taskIndex = tasks.findIndex((t) => t.name === task.name);
+  tasks[taskIndex].pauseTime = task.pauseTime!.toISOString();
+  await Deno.writeTextFile(filePath, JSON.stringify(tasks));
+}

@@ -14,7 +14,7 @@ export interface InProgressTask {
 export interface PausedTask {
   name: string;
   startTime: Date;
-  endTime: undefined;
+  endTime?: undefined;
   pauseTime: Date;
   resumeTime?: Date;
   totalPausedTime: number;
@@ -71,5 +71,13 @@ export function completeTask(task: InProgressTask, endTime: Date = new Date()): 
     ...task,
     endTime,
     status: 'done',
+  };
+}
+
+export function pauseTask(task: InProgressTask, pauseTime: Date = new Date()): PausedTask {
+  return {
+    ...task,
+    pauseTime,
+    status: 'pause',
   };
 }
