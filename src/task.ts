@@ -51,3 +51,11 @@ export async function listTasks(filePath: string) {
     );
   });
 }
+
+export async function startTask(name: string, filePath: string) {
+  const tasks = await loadTasks(filePath);
+  const startTime = new Date();
+  tasks.push({ name, startTime });
+  await saveTasks(tasks, filePath);
+  console.log(`Started task: ${name} at ${startTime.toLocaleString()}`);
+}
