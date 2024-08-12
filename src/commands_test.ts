@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert/equals";
-import { startTask, endTask, pauseTask, resumeTask, listTasks } from "./task.ts";
+import { startTask, endTask, pauseTask, resumeTask, listTasks } from "./commands.ts";
 import { assert, assertExists, assertStringIncludes } from "@std/assert";
 import {
   afterAll,
@@ -78,6 +78,6 @@ describe("Task", () => {
     const output = consoleSpy.calls.map(call => call.args.join(" ")).join("\n");
     assertStringIncludes(output, "Test Task");
     assertStringIncludes(output, "Duration:");
-    assertStringIncludes(output, "Ended");
+    assertStringIncludes(output, "done");
   });
 });

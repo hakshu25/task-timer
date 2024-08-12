@@ -1,3 +1,7 @@
+import { getTaskDuration } from "./domains/task.ts";
+import { listTasksUsecase } from "./usecases/task_usecase.ts";
+import { formatDuration } from "./utils/date.ts";
+
 interface Task {
   name: string;
   startTime: Date;
@@ -34,28 +38,16 @@ async function loadTasks(filePath: string): Promise<Task[]> {
   }
 }
 
-function formatDuration(milliseconds: number): string {
-  const seconds = milliseconds / 1000;
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
 export async function listTasks(filePath: string) {
-  const tasks = await loadTasks(filePath);
+  const tasks = await listTasksUsecase(filePath);
   if (tasks.length === 0) {
     console.log("No tasks recorded.");
     return;
   }
+
   tasks.forEach((task) => {
-    const durationMilliseconds = task.endTime
-      ? task.endTime.getTime() - task.startTime.getTime() - (task.totalPausedTime * 1000)
-      : task.pauseTime ? task.pauseTime.getTime() - task.startTime.getTime() : (new Date().getTime() - task.startTime.getTime() - (task.totalPausedTime * 1000));
-    const duration = formatDuration(durationMilliseconds);
-    const status = task.endTime ? "Ended" : task.pauseTime ? "Paused" : "In progress";
     console.log(
-      `Task: ${task.name} | Start: ${task.startTime.toLocaleString()} | Duration: ${duration} | Status: ${status}`,
+      `${task.name} | Start: ${task.startTime.toLocaleString()} | Duration: ${formatDuration(getTaskDuration(task))} | Status: ${task.status}`,
     );
   });
 }

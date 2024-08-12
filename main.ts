@@ -1,5 +1,5 @@
 import { parseArgs } from "@std/cli/parse-args";
-import { endTask, listTasks, pauseTask, resumeTask, startTask } from "./src/task.ts";
+import { endTask, listTasks, pauseTask, resumeTask, startTask } from "./src/commands.ts";
 
 const tasksFilePath = "./data/tasks.json";
 
