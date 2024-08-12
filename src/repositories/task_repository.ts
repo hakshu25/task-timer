@@ -62,3 +62,13 @@ export async function getAllTasks(filePath: string): Promise<Task[]> {
     const tasks: Task[] = data.map((task: TaskJsonObj) => buildTask(task));
     return tasks;
 }
+
+export async function saveTask(task: Task, filePath: string) {
+  const tasks = await loadTasks(filePath);
+  tasks.push({
+    name: task.name,
+    startTime: task.startTime.toISOString(),
+    totalPausedTime: task.totalPausedTime,
+  });
+  await Deno.writeTextFile(filePath, JSON.stringify(tasks));
+}

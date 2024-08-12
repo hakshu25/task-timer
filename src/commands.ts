@@ -1,5 +1,5 @@
 import { getTaskDuration } from "./domains/task.ts";
-import { listTasksUsecase } from "./usecases/task_usecase.ts";
+import { listTasksUsecase, startTaskUsecase } from "./usecases/task_usecase.ts";
 import { formatDuration } from "./utils/date.ts";
 
 interface Task {
@@ -53,11 +53,8 @@ export async function listTasks(filePath: string) {
 }
 
 export async function startTask(name: string, filePath: string) {
-  const tasks = await loadTasks(filePath);
-  const startTime = new Date();
-  tasks.push({ name, startTime, totalPausedTime: 0 });
-  await saveTasks(tasks, filePath);
-  console.log(`Started task: ${name} at ${startTime.toLocaleString()}`);
+  await startTaskUsecase(name, filePath);
+  console.log(`Started task: ${name}}`);
 }
 
 export async function endTask(name: string, filePath: string) {

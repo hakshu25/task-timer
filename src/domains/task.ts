@@ -52,3 +52,12 @@ export function getTaskDuration(task: Task): number {
 
   return durationTime(task.startTime.getTime(), new Date().getTime()) - task.totalPausedTime;
 }
+
+export function createNewTask(name: string, startTime: Date = new Date()): InProgressTask {
+  return {
+    name,
+    startTime,
+    totalPausedTime: 0,
+    status: 'in_progress',
+  };
+}
