@@ -95,14 +95,18 @@ export async function findTask(
 
 export async function updateTaskEndTime(task: DoneTask, filePath: string) {
   const tasks = await loadTasks(filePath);
-  const taskIndex = tasks.findIndex((t) => t.name === task.name);
+  const taskIndex = tasks.findIndex((t) =>
+    t.name === task.name && getTaskStatus(t) === "in_progress"
+  );
   tasks[taskIndex].endTime = task.endTime!.toISOString();
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
 }
 
 export async function updateTaskPauseTime(task: PausedTask, filePath: string) {
   const tasks = await loadTasks(filePath);
-  const taskIndex = tasks.findIndex((t) => t.name === task.name);
+  const taskIndex = tasks.findIndex((t) =>
+    t.name === task.name && getTaskStatus(t) === "in_progress"
+  );
   tasks[taskIndex].pauseTime = task.pauseTime!.toISOString();
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
 }
@@ -112,7 +116,9 @@ export async function updateTaskForResume(
   filePath: string,
 ) {
   const tasks = await loadTasks(filePath);
-  const taskIndex = tasks.findIndex((t) => t.name === task.name);
+  const taskIndex = tasks.findIndex((t) =>
+    t.name === task.name && getTaskStatus(t) === "pause"
+  );
   tasks[taskIndex].totalPausedTime = task.totalPausedTime;
   delete tasks[taskIndex].pauseTime;
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
