@@ -15,11 +15,13 @@ export async function listTasks(filePath: string) {
     return;
   }
 
+  console.log("Name\t\tStart Time\t\t\tDuration\t\tStatus");
+
   tasks.forEach((task) => {
     console.log(
-      `${task.name} | Start: ${task.startTime.toLocaleString()} | Duration: ${
+      `${task.name}\t\t${task.startTime.toLocaleString()}\t\t${
         formatDuration(getTaskDuration(task))
-      } | Status: ${task.status}`,
+      }\t\t${task.status}`,
     );
   });
 }
