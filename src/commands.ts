@@ -26,7 +26,7 @@ export async function listTasks(filePath: string) {
 
 export async function startTask(name: string, filePath: string) {
   await startTaskUsecase(name, filePath);
-  console.log(`Started task: ${name}}`);
+  console.log(`Started task: ${name}`);
 }
 
 export async function endTask(name: string, filePath: string) {
