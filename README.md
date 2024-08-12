@@ -16,6 +16,13 @@ deno install --allow-read --allow-write --name task-timer https://raw.githubuser
 
 ## Usage
 
+set environment variable `TASK_TIMER_FILE` to the path of the file where the
+tasks are stored.
+
+```sh
+export TASK_TIMER_FILE=<path-to-file>
+```
+
 To start a task, run the following command:
 
 ```sh
