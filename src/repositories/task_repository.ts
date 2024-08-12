@@ -5,7 +5,6 @@ export interface TaskJsonObj {
   startTime: string;
   endTime?: string;
   pauseTime?: string;
-  resumeTime?: string;
   totalPausedTime: number;
 }
 
@@ -36,7 +35,6 @@ function buildTask(task: TaskJsonObj): Task {
     return {
       ...baseTask,
       pauseTime: new Date(task.pauseTime!),
-      resumeTime: task.resumeTime ? new Date(task.resumeTime) : undefined,
     } as PausedTask;
   }
 
@@ -100,7 +98,6 @@ export async function updateTaskPauseTime(task: PausedTask, filePath: string) {
 export async function updateTaskForResume(task: InProgressTask, filePath: string) {
   const tasks = await loadTasks(filePath);
   const taskIndex = tasks.findIndex((t) => t.name === task.name);
-  tasks[taskIndex].resumeTime = task.resumeTime!.toISOString();
   tasks[taskIndex].totalPausedTime = task.totalPausedTime;
   delete tasks[taskIndex].pauseTime;
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));

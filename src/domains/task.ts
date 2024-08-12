@@ -5,8 +5,6 @@ export type TaskStatus = 'in_progress' | 'pause' | 'done';
 export interface InProgressTask {
   name: string;
   startTime: Date;
-  pauseTime?: undefined;
-  resumeTime?: Date;
   totalPausedTime: number;
   status: Extract<TaskStatus, 'in_progress'>;
 }
@@ -14,9 +12,7 @@ export interface InProgressTask {
 export interface PausedTask {
   name: string;
   startTime: Date;
-  endTime?: undefined;
   pauseTime: Date;
-  resumeTime?: Date;
   totalPausedTime: number;
   status: Extract<TaskStatus, 'pause'>;
 }
@@ -25,8 +21,6 @@ export interface DoneTask {
   name: string;
   startTime: Date;
   endTime: Date;
-  pauseTime?: Date;
-  resumeTime?: Date;
   totalPausedTime: number;
   status: Extract<TaskStatus, 'done'>;
 }
@@ -84,11 +78,10 @@ export function pauseTask(task: InProgressTask, pauseTime: Date = new Date()): P
 
 export function resumeTask(task: PausedTask, resumeTime: Date = new Date()): InProgressTask {
   const totalPausedTime = task.totalPausedTime + durationTime(task.pauseTime.getTime(), resumeTime.getTime());
+  const { pauseTime: _pauseTime, ...resumedTask } = task;
 
   return {
-    ...task,
-    pauseTime: undefined,
-    resumeTime,
+    ...resumedTask,
     totalPausedTime,
     status: 'in_progress',
   };
