@@ -5,35 +5,35 @@ const tasksFilePath = "./data/tasks.json";
 
 const args = parseArgs(Deno.args);
 const command = args._[0];
-const taskName = args.name || args.n;
+const taskName: string | boolean | undefined = args.name || args.n;
 
 switch (command) {
   case "list":
     await listTasks(tasksFilePath);
     break;
   case "start":
-    if (!taskName) {
+    if (!taskName || taskName === true) {
       console.log("Please provide a task name using --name or -n option.");
     } else {
       await startTask(taskName, tasksFilePath);
     }
     break;
   case "end":
-    if (!taskName) {
+    if (!taskName || taskName === true) {
       console.log("Please provide a task name using --name or -n option.");
     } else {
       await endTask(taskName, tasksFilePath);
     }
     break;
   case "pause":
-    if (!taskName) {
+    if (!taskName || taskName === true) {
       console.log("Please provide a task name using --name or -n option.");
     } else {
       await pauseTask(taskName, tasksFilePath);
     }
     break;
   case "resume":
-    if (!taskName) {
+    if (!taskName || taskName === true) {
       console.log("Please provide a task name using --name or -n option.");
     } else {
       await resumeTask(taskName, tasksFilePath);
