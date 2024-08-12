@@ -1,5 +1,5 @@
 import { parseArgs } from "@std/cli/parse-args";
-import { listTasks, startTask } from "./src/task.ts";
+import { endTask, listTasks, startTask } from "./src/task.ts";
 
 const tasksFilePath = "./data/tasks.json";
 
@@ -16,6 +16,13 @@ switch (command) {
       console.log("Please provide a task name using --name or -n option.");
     } else {
       await startTask(taskName, tasksFilePath);
+    }
+    break;
+  case "end":
+    if (!taskName) {
+      console.log("Please provide a task name using --name or -n option.");
+    } else {
+      await endTask(taskName, tasksFilePath);
     }
     break;
   default:

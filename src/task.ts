@@ -59,3 +59,17 @@ export async function startTask(name: string, filePath: string) {
   await saveTasks(tasks, filePath);
   console.log(`Started task: ${name} at ${startTime.toLocaleString()}`);
 }
+
+export async function endTask(name: string, filePath: string) {
+  const tasks = await loadTasks(filePath);
+  const task = tasks.find((t) => t.name === name && !t.endTime);
+  if (!task) {
+    console.log(`Task ${name} not found or already ended.`);
+    return;
+  }
+  task.endTime = new Date();
+  await saveTasks(tasks, filePath);
+  const duration = formatDuration(task.endTime.getTime() - task.startTime.getTime());
+  console.log(`Task '${name}' ended at ${task.endTime.toLocaleString()}`);
+  console.log(`Duration: ${duration}`);
+}
