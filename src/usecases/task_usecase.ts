@@ -5,7 +5,7 @@ export async function listTasksUsecase(filePath: string): Promise<Task[]> {
   return await getAllTasks(filePath);
 }
 
-export async function startTaskUsecase(name: string, filePath: string) {
+export async function startTaskUsecase(name: string, filePath: string): Promise<void> {
   const task = createNewTask(name);
   await saveTask(task, filePath);
 }
