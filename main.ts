@@ -11,42 +11,36 @@ const tasksFilePath = "./data/tasks.json";
 
 const args = parseArgs(Deno.args);
 const command = args._[0];
-const taskName: string | boolean | undefined = args.name || args.n;
+const taskName: string | number | undefined = args._[1];
 
-switch (command) {
-  case "list":
+async function main() {
+  if (!command) {
     await listTasks(tasksFilePath);
-    break;
-  case "start":
-    if (!taskName || taskName === true) {
-      console.log("Please provide a task name using --name or -n option.");
-    } else {
+    console.log("\nAvailable commands: start, end, pause, resume");
+    return;
+  }
+
+  if (!taskName || typeof taskName === "number") {
+    console.log("Please provide a task name.");
+    return;
+  }
+
+  switch (command) {
+    case "start":
       await startTask(taskName, tasksFilePath);
-    }
-    break;
-  case "end":
-    if (!taskName || taskName === true) {
-      console.log("Please provide a task name using --name or -n option.");
-    } else {
+      break;
+    case "end":
       await endTask(taskName, tasksFilePath);
-    }
-    break;
-  case "pause":
-    if (!taskName || taskName === true) {
-      console.log("Please provide a task name using --name or -n option.");
-    } else {
+      break;
+    case "pause":
       await pauseTask(taskName, tasksFilePath);
-    }
-    break;
-  case "resume":
-    if (!taskName || taskName === true) {
-      console.log("Please provide a task name using --name or -n option.");
-    } else {
+      break;
+    case "resume":
       await resumeTask(taskName, tasksFilePath);
-    }
-    break;
-  default:
-    await listTasks(tasksFilePath);
-    console.log("Available commands: list");
-    break;
+      break;
+  }
+}
+
+if (import.meta.main) {
+  await main();
 }
