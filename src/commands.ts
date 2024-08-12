@@ -2,41 +2,6 @@ import { getTaskDuration } from "./domains/task.ts";
 import { endTaskUsecase, listTasksUsecase, pauseTaskUsecase, resumeTaskUsecase, startTaskUsecase } from "./usecases/task_usecase.ts";
 import { formatDuration } from "./utils/date.ts";
 
-interface Task {
-  name: string;
-  startTime: Date;
-  endTime?: Date;
-  pauseTime?: Date;
-  resumeTime?: Date;
-  totalPausedTime: number;
-}
-
-async function saveTasks(tasks: Task[], filePath: string): Promise<void> {
-  const data = JSON.stringify(tasks);
-  await Deno.writeTextFile(filePath, data);
-}
-
-async function loadTasks(filePath: string): Promise<Task[]> {
-  try {
-    const data = await Deno.readTextFile(filePath);
-    const tasks: Task[] = JSON.parse(data).map((task: Task) => ({
-      ...task,
-      startTime: new Date(task.startTime),
-      endTime: task.endTime ? new Date(task.endTime) : undefined,
-      pauseTime: task.pauseTime ? new Date(task.pauseTime) : undefined,
-      resumeTime: task.resumeTime ? new Date(task.resumeTime) : undefined,
-      totalPausedTime: task.totalPausedTime || 0,
-    }));
-    return tasks;
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) {
-      await saveTasks([], filePath);
-      return [];
-    }
-
-    throw error;
-  }
-}
 
 export async function listTasks(filePath: string) {
   const tasks = await listTasksUsecase(filePath);
