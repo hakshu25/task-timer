@@ -1,4 +1,7 @@
 {
+  "name": "@task-timer/cli",
+  "version": "0.1.0",
+  "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run --allow-read --allow-write main.ts",
     "test": "deno test --allow-read --allow-write"
