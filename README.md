@@ -11,10 +11,17 @@ and view the time you have spent on each task.
 To install the task timer, clone the repository and run the following command:
 
 ```sh
-deno install --allow-read --allow-write --name task-timer https://raw.githubusercontent.com/hakshu25/task-timer/main/src/main.ts
+deno install --global --allow-read --allow-write --allow-env --name task-timer jsr:@task-timer/cli
 ```
 
 ## Usage
+
+set environment variable `TASK_TIMER_FILE` to the path of the file where the
+tasks are stored.
+
+```sh
+export TASK_TIMER_FILE=<path-to-file>
+```
 
 To start a task, run the following command:
 

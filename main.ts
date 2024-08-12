@@ -7,13 +7,17 @@ import {
   startTask,
 } from "./src/commands.ts";
 
-const tasksFilePath = "./data/tasks.json";
-
 const args = parseArgs(Deno.args);
 const command = args._[0];
 const taskName: string | number | undefined = args._[1];
 
 async function main() {
+  const tasksFilePath = Deno.env.get("TASK_TIMER_FILE_PATH");
+  if (!tasksFilePath) {
+    console.log("TASK_TIMER_FILE_PATH environment variable is not set.");
+    return;
+  }
+
   if (!command) {
     await listTasks(tasksFilePath);
     console.log("\nAvailable commands: start, end, pause, resume");
@@ -42,5 +46,5 @@ async function main() {
 }
 
 if (import.meta.main) {
-  await main();
+  main();
 }
