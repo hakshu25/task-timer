@@ -1,12 +1,12 @@
 import { durationTime } from "../utils/date.ts";
 
-export type TaskStatus = 'in_progress' | 'pause' | 'done';
+export type TaskStatus = "in_progress" | "pause" | "done";
 
 export interface InProgressTask {
   name: string;
   startTime: Date;
   totalPausedTime: number;
-  status: Extract<TaskStatus, 'in_progress'>;
+  status: Extract<TaskStatus, "in_progress">;
 }
 
 export interface PausedTask {
@@ -14,7 +14,7 @@ export interface PausedTask {
   startTime: Date;
   pauseTime: Date;
   totalPausedTime: number;
-  status: Extract<TaskStatus, 'pause'>;
+  status: Extract<TaskStatus, "pause">;
 }
 
 export interface DoneTask {
@@ -22,67 +22,82 @@ export interface DoneTask {
   startTime: Date;
   endTime: Date;
   totalPausedTime: number;
-  status: Extract<TaskStatus, 'done'>;
+  status: Extract<TaskStatus, "done">;
 }
 
 export type Task = InProgressTask | PausedTask | DoneTask;
 
 function isTaskDone(task: Task): task is DoneTask {
-  return task.status === 'done';
+  return task.status === "done";
 }
 
 export function isTaskPaused(task: Task): task is PausedTask {
-  return task.status === 'pause';
+  return task.status === "pause";
 }
 
 export function isTaskInProgress(task: Task): task is InProgressTask {
-  return task.status === 'in_progress';
+  return task.status === "in_progress";
 }
 
 export function getTaskDuration(task: Task): number {
   if (isTaskDone(task)) {
-    return durationTime(task.startTime.getTime(), task.endTime.getTime()) - task.totalPausedTime;
+    return durationTime(task.startTime.getTime(), task.endTime.getTime()) -
+      task.totalPausedTime;
   }
 
   if (isTaskPaused(task)) {
     return durationTime(task.startTime.getTime(), task.pauseTime.getTime());
   }
 
-  return durationTime(task.startTime.getTime(), new Date().getTime()) - task.totalPausedTime;
+  return durationTime(task.startTime.getTime(), new Date().getTime()) -
+    task.totalPausedTime;
 }
 
-export function createNewTask(name: string, startTime: Date = new Date()): InProgressTask {
+export function createNewTask(
+  name: string,
+  startTime: Date = new Date(),
+): InProgressTask {
   return {
     name,
     startTime,
     totalPausedTime: 0,
-    status: 'in_progress',
+    status: "in_progress",
   };
 }
 
-export function completeTask(task: InProgressTask, endTime: Date = new Date()): DoneTask {
+export function completeTask(
+  task: InProgressTask,
+  endTime: Date = new Date(),
+): DoneTask {
   return {
     ...task,
     endTime,
-    status: 'done',
+    status: "done",
   };
 }
 
-export function pauseTask(task: InProgressTask, pauseTime: Date = new Date()): PausedTask {
+export function pauseTask(
+  task: InProgressTask,
+  pauseTime: Date = new Date(),
+): PausedTask {
   return {
     ...task,
     pauseTime,
-    status: 'pause',
+    status: "pause",
   };
 }
 
-export function resumeTask(task: PausedTask, resumeTime: Date = new Date()): InProgressTask {
-  const totalPausedTime = task.totalPausedTime + durationTime(task.pauseTime.getTime(), resumeTime.getTime());
+export function resumeTask(
+  task: PausedTask,
+  resumeTime: Date = new Date(),
+): InProgressTask {
+  const totalPausedTime = task.totalPausedTime +
+    durationTime(task.pauseTime.getTime(), resumeTime.getTime());
   const { pauseTime: _pauseTime, ...resumedTask } = task;
 
   return {
     ...resumedTask,
     totalPausedTime,
-    status: 'in_progress',
+    status: "in_progress",
   };
 }

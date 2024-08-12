@@ -1,4 +1,10 @@
-import { DoneTask, InProgressTask, PausedTask, Task, TaskStatus } from "../domains/task.ts";
+import {
+  DoneTask,
+  InProgressTask,
+  PausedTask,
+  Task,
+  TaskStatus,
+} from "../domains/task.ts";
 
 export interface TaskJsonObj {
   name: string;
@@ -10,12 +16,12 @@ export interface TaskJsonObj {
 
 function getTaskStatus(task: TaskJsonObj): TaskStatus {
   if (task.pauseTime !== undefined) {
-    return 'pause';
-  } else if(task.endTime !== undefined) {
-    return 'done';
+    return "pause";
+  } else if (task.endTime !== undefined) {
+    return "done";
   }
 
-  return 'in_progress';
+  return "in_progress";
 }
 
 function buildTask(task: TaskJsonObj): Task {
@@ -26,12 +32,12 @@ function buildTask(task: TaskJsonObj): Task {
     status: getTaskStatus(task),
   };
 
-  if (baseTask.status === 'done') {
+  if (baseTask.status === "done") {
     return {
       ...baseTask,
       endTime: new Date(task.endTime!),
     } as DoneTask;
-  } else if (baseTask.status === 'pause') {
+  } else if (baseTask.status === "pause") {
     return {
       ...baseTask,
       pauseTime: new Date(task.pauseTime!),
@@ -56,9 +62,9 @@ async function loadTasks(filePath: string): Promise<TaskJsonObj[]> {
 }
 
 export async function getAllTasks(filePath: string): Promise<Task[]> {
-    const data = await loadTasks(filePath);
-    const tasks: Task[] = data.map((task: TaskJsonObj) => buildTask(task));
-    return tasks;
+  const data = await loadTasks(filePath);
+  const tasks: Task[] = data.map((task: TaskJsonObj) => buildTask(task));
+  return tasks;
 }
 
 export async function saveTask(task: Task, filePath: string) {
@@ -71,7 +77,10 @@ export async function saveTask(task: Task, filePath: string) {
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
 }
 
-export async function findTask(name: string, filePath: string): Promise<Task | undefined> {
+export async function findTask(
+  name: string,
+  filePath: string,
+): Promise<Task | undefined> {
   const tasks = await loadTasks(filePath);
   const taskJsonObj = tasks.find((task) => task.name === name);
   if (!taskJsonObj) {
@@ -95,7 +104,10 @@ export async function updateTaskPauseTime(task: PausedTask, filePath: string) {
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
 }
 
-export async function updateTaskForResume(task: InProgressTask, filePath: string) {
+export async function updateTaskForResume(
+  task: InProgressTask,
+  filePath: string,
+) {
   const tasks = await loadTasks(filePath);
   const taskIndex = tasks.findIndex((t) => t.name === task.name);
   tasks[taskIndex].totalPausedTime = task.totalPausedTime;

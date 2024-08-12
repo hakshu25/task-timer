@@ -1,5 +1,11 @@
 import { assertEquals } from "@std/assert/equals";
-import { startTask, endTask, pauseTask, resumeTask, listTasks } from "./commands.ts";
+import {
+  endTask,
+  listTasks,
+  pauseTask,
+  resumeTask,
+  startTask,
+} from "./commands.ts";
 import { assert, assertExists, assertStringIncludes } from "@std/assert";
 import {
   afterAll,
@@ -20,14 +26,13 @@ describe("Task", () => {
   let consoleSpy: Stub;
 
   beforeEach(async () => {
-    await Deno.writeTextFile(testFilePath, "[]");    
+    await Deno.writeTextFile(testFilePath, "[]");
     consoleSpy = spy(console, "log") as Stub;
-  })
-
+  });
 
   afterEach(() => {
     consoleSpy.restore();
-  })
+  });
 
   afterAll(async () => {
     await Deno.remove(testFilePath);
@@ -75,7 +80,9 @@ describe("Task", () => {
     await listTasks(testFilePath);
 
     assertEquals(consoleSpy.calls.length > 0, true);
-    const output = consoleSpy.calls.map(call => call.args.join(" ")).join("\n");
+    const output = consoleSpy.calls.map((call) => call.args.join(" ")).join(
+      "\n",
+    );
     assertStringIncludes(output, "Test Task");
     assertStringIncludes(output, "Duration:");
     assertStringIncludes(output, "done");

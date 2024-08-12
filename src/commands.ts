@@ -1,7 +1,12 @@
 import { getTaskDuration } from "./domains/task.ts";
-import { endTaskUsecase, listTasksUsecase, pauseTaskUsecase, resumeTaskUsecase, startTaskUsecase } from "./usecases/task_usecase.ts";
+import {
+  endTaskUsecase,
+  listTasksUsecase,
+  pauseTaskUsecase,
+  resumeTaskUsecase,
+  startTaskUsecase,
+} from "./usecases/task_usecase.ts";
 import { formatDuration } from "./utils/date.ts";
-
 
 export async function listTasks(filePath: string) {
   const tasks = await listTasksUsecase(filePath);
@@ -12,7 +17,9 @@ export async function listTasks(filePath: string) {
 
   tasks.forEach((task) => {
     console.log(
-      `${task.name} | Start: ${task.startTime.toLocaleString()} | Duration: ${formatDuration(getTaskDuration(task))} | Status: ${task.status}`,
+      `${task.name} | Start: ${task.startTime.toLocaleString()} | Duration: ${
+        formatDuration(getTaskDuration(task))
+      } | Status: ${task.status}`,
     );
   });
 }
