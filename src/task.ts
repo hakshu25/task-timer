@@ -3,6 +3,7 @@ interface Task {
   startTime: Date;
   endTime?: Date;
   pauseTime?: Date;
+  resumeTime?: Date;
   totalPausedTime: number;
 }
 
@@ -19,6 +20,7 @@ async function loadTasks(filePath: string): Promise<Task[]> {
       startTime: new Date(task.startTime),
       endTime: task.endTime ? new Date(task.endTime) : undefined,
       pauseTime: task.pauseTime ? new Date(task.pauseTime) : undefined,
+      resumeTime: task.resumeTime ? new Date(task.resumeTime) : undefined,
       totalPausedTime: task.totalPausedTime || 0,
     }));
     return tasks;
@@ -49,7 +51,7 @@ export async function listTasks(filePath: string) {
   tasks.forEach((task) => {
     const durationMilliseconds = task.endTime
       ? task.endTime.getTime() - task.startTime.getTime() - (task.totalPausedTime * 1000)
-      : (new Date().getTime() - task.startTime.getTime() - (task.totalPausedTime * 1000));
+      : task.pauseTime ? task.pauseTime.getTime() - task.startTime.getTime() : (new Date().getTime() - task.startTime.getTime() - (task.totalPausedTime * 1000));
     const duration = formatDuration(durationMilliseconds);
     const status = task.endTime ? "Ended" : task.pauseTime ? "Paused" : "In progress";
     console.log(
@@ -94,4 +96,19 @@ export async function pauseTask(name: string, filePath: string) {
   task.pauseTime = new Date();
   await saveTasks(tasks, filePath);
   console.log(`Task '${name}' paused at ${task.pauseTime.toLocaleString()}`);
+}
+
+export async function resumeTask(name: string, filePath: string) {
+  const tasks = await loadTasks(filePath);
+  const task = tasks.find((t) => t.name === name && !t.endTime && t.pauseTime);
+  if (!task || !task.pauseTime) {
+    console.log(`Task '${name}' not found or not paused.`);
+    return;
+  }
+  task.resumeTime = new Date();
+  const pausedDuration = (task.resumeTime.getTime() - task.pauseTime.getTime()) / 1000;
+  task.totalPausedTime += pausedDuration;
+  task.pauseTime = undefined;
+  await saveTasks(tasks, filePath);
+  console.log(`Task '${name}' resumed at ${task.resumeTime.toLocaleString()}`);
 }
