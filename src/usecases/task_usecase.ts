@@ -33,7 +33,7 @@ export async function endTaskUsecase(
   name: string,
   filePath: string,
 ): Promise<DoneTask> {
-  const task = await findTask(name, filePath);
+  const task = await findTask(filePath, name, "in_progress");
 
   if (!task || !isTaskInProgress(task)) {
     throw new Error("Task is not found or not in progress.");
@@ -48,7 +48,7 @@ export async function pauseTaskUsecase(
   name: string,
   filePath: string,
 ): Promise<void> {
-  const task = await findTask(name, filePath);
+  const task = await findTask(filePath, name, "in_progress");
 
   if (!task || !isTaskInProgress(task)) {
     throw new Error("Task is not found or not in progress.");
@@ -62,7 +62,7 @@ export async function resumeTaskUsecase(
   name: string,
   filePath: string,
 ): Promise<void> {
-  const task = await findTask(name, filePath);
+  const task = await findTask(filePath, name, "pause");
 
   if (!task || !isTaskPaused(task)) {
     throw new Error("Task is not found or not paused.");

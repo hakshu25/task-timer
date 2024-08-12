@@ -78,11 +78,14 @@ export async function saveTask(task: Task, filePath: string) {
 }
 
 export async function findTask(
-  name: string,
   filePath: string,
+  name: string,
+  status?: TaskStatus,
 ): Promise<Task | undefined> {
   const tasks = await loadTasks(filePath);
-  const taskJsonObj = tasks.find((task) => task.name === name);
+  const taskJsonObj = tasks.find((task) =>
+    task.name === name && getTaskStatus(task) === status
+  );
   if (!taskJsonObj) {
     return undefined;
   }
