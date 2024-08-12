@@ -41,6 +41,10 @@ function isTaskPaused(task: Task): task is PausedTask {
   return task.status === 'pause';
 }
 
+export function isTaskInProgress(task: Task): task is InProgressTask {
+  return task.status === 'in_progress';
+}
+
 export function getTaskDuration(task: Task): number {
   if (isTaskDone(task)) {
     return durationTime(task.startTime.getTime(), task.endTime.getTime()) - task.totalPausedTime;
@@ -59,5 +63,13 @@ export function createNewTask(name: string, startTime: Date = new Date()): InPro
     startTime,
     totalPausedTime: 0,
     status: 'in_progress',
+  };
+}
+
+export function completeTask(task: InProgressTask, endTime: Date = new Date()): DoneTask {
+  return {
+    ...task,
+    endTime,
+    status: 'done',
   };
 }

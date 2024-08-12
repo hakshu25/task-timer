@@ -72,3 +72,20 @@ export async function saveTask(task: Task, filePath: string) {
   });
   await Deno.writeTextFile(filePath, JSON.stringify(tasks));
 }
+
+export async function findTask(name: string, filePath: string): Promise<Task | undefined> {
+  const tasks = await loadTasks(filePath);
+  const taskJsonObj = tasks.find((task) => task.name === name);
+  if (!taskJsonObj) {
+    return undefined;
+  }
+
+  return buildTask(taskJsonObj);
+}
+
+export async function updateTaskEndTime(task: DoneTask, filePath: string) {
+  const tasks = await loadTasks(filePath);
+  const taskIndex = tasks.findIndex((t) => t.name === task.name);
+  tasks[taskIndex].endTime = task.endTime!.toISOString();
+  await Deno.writeTextFile(filePath, JSON.stringify(tasks));
+}
