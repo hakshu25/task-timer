@@ -37,7 +37,7 @@ function isTaskDone(task: Task): task is DoneTask {
   return task.status === 'done';
 }
 
-function isTaskPaused(task: Task): task is PausedTask {
+export function isTaskPaused(task: Task): task is PausedTask {
   return task.status === 'pause';
 }
 
@@ -79,5 +79,17 @@ export function pauseTask(task: InProgressTask, pauseTime: Date = new Date()): P
     ...task,
     pauseTime,
     status: 'pause',
+  };
+}
+
+export function resumeTask(task: PausedTask, resumeTime: Date = new Date()): InProgressTask {
+  const totalPausedTime = task.totalPausedTime + durationTime(task.pauseTime.getTime(), resumeTime.getTime());
+
+  return {
+    ...task,
+    pauseTime: undefined,
+    resumeTime,
+    totalPausedTime,
+    status: 'in_progress',
   };
 }
