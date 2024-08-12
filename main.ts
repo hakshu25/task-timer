@@ -1,8 +1,17 @@
-export function add(a: number, b: number): number {
-  return a + b;
-}
+import { parseArgs } from "@std/cli/parse-args";
+import { listTasks } from "./src/task.ts";
 
-// Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
-if (import.meta.main) {
-  console.log("Add 2 + 3 =", add(2, 3));
+const tasksFilePath = "./data/tasks.json";
+
+const args = parseArgs(Deno.args);
+const command = args._[0];
+
+switch (command) {
+  case "list":
+    await listTasks(tasksFilePath);
+    break;
+  default:
+    await listTasks(tasksFilePath);
+    console.log("Available commands: list");
+    break;
 }
